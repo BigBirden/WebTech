@@ -1,8 +1,12 @@
 import express , {Request, Response} from "express"
-import mongoose from "mongoose"
-import User from "./models/User"
+import usersRouter from "./routes/users.routes";
+import swaggerUI from "swagger-ui-express";
+import swaggerSpec from "./config/openAPI";
+import { connectDB } from "./config/connectDB";
 const app = express()
 const port = 3000
+
+//npm run dev - запуск
 
 //Для использования статических файлов
 app.use(express.static('public'))
@@ -10,43 +14,10 @@ app.use(express.static('public'))
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-mongoose
-  .connect("mongodb://admin:1234@localhost:27017/ivtb-22?authSource=admin")
-  .then(()=>console.log("DB connected!"))
-  .catch((err)=>console.log(err));
+connectDB();
 
-//Добавление пользователя (эндпоинт)
-app.post("/users", async (req: Request, res: Response) => {
-  try {
-    console.log(req.body);
-    const user = new User(req.body);
-    await user.save();
-    res.status(201).json(user);
-  } catch (e) {
-    res.status(400).json({message: (e as Error).message})
-  }
-})
-
-//Получение всех пользователей (эндпоинт)
-app.get("/users", async (req: Request, res: Response) => {
-  try {
-    const users = await User.find();
-    res.status(201).json(users);
-  } catch (e) {
-    res.status(400).json({message: (e as Error).message})
-  }
-})
-
-//Удаление пользователя по полученному телу (эндпоинт)
-app.delete("/users", async (req: Request, res: Response) => {
-  try {
-    console.log(req.body);
-    const result = await User.deleteOne(req.body);
-    res.status(201).json(result);
-  } catch (e) {
-    res.status(400).json({message: (e as Error).message})
-  }
-})
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+app.use("/users", usersRouter)
 
 //Страница чето там
 app.set("view engine", "ejs")
