@@ -1,5 +1,6 @@
 import express , {Request, Response} from "express"
 import usersRouter from "./routes/users.routes";
+import authRouter from "./routes/auth.routes";
 import swaggerUI from "swagger-ui-express";
 import swaggerSpec from "./config/openAPI";
 import { connectDB } from "./config/connectDB";
@@ -18,6 +19,7 @@ connectDB();
 
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 app.use("/users", usersRouter)
+app.use("/auth", authRouter)
 
 //Страница чето там
 app.set("view engine", "ejs")
