@@ -37,6 +37,10 @@ const router = Router();
  *                 format: password
  *                 minLength: 8
  *                 example: "ZGoidaSVO"
+ *               role:
+ *                 type: string
+ *                 default: user
+ *                 example: user
  *     responses:
  *       201:
  *         description: Пользователь зарегистрирован
@@ -45,21 +49,28 @@ const router = Router();
  *             schema:
  *               type: object
  *               properties:
- *                 username:
+ *                 user:
+ *                   type: object
+ *                   properties: 
+ *                     username:
+ *                       type: string
+ *                       example: "Юра Мыколенко"
+ *                     email:
+ *                       type: string
+ *                       example: "hryumia@mail.com"
+ *                     password:
+ *                       type: string
+ *                       example: "$2b$10$e6m9iPyQ5aqRTvWjv7PBZOsEo6dd1A4etEWsRLMWA.K3TiLmunNJG"
+ *                     _id:
+ *                       type: string
+ *                       example: "67fe5f67a91106d0985d57f9"
+ *                     __v:
+ *                       type: int
+ *                       example: 0
+ *                 token:
  *                   type: string
- *                   example: "Юра Мыколенко"
- *                 email:
+ *                 message:
  *                   type: string
- *                   example: "hryumia@mail.com"
- *                 password:
- *                   type: string
- *                   example: "$2b$10$e6m9iPyQ5aqRTvWjv7PBZOsEo6dd1A4etEWsRLMWA.K3TiLmunNJG"
- *                 _id:
- *                   type: string
- *                   example: "67fe5f67a91106d0985d57f9"
- *                 __v:
- *                   type: int
- *                   example: 0
  *       400:
  *         description: Неверные данные
  *         content:

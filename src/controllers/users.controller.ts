@@ -1,5 +1,7 @@
+import jwt from "jsonwebtoken";
 import User from "../models/User";
 import type { Response, Request } from "express";
+import { JWT_SECRET } from "../config/constants";
 
 //Создать пользователя
 export const createUser = async (req: Request, res: Response) => {
@@ -55,6 +57,26 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 };
 //Удаление пользователя по полученному телу (эндпоинт)
 export const deleteUser = async (req: Request, res: Response) => {
+  //Работа с токеном
+  const authHeader = req.headers.authorization
+
+  if(!authHeader || !authHeader.startsWith("Bearer ")){
+    res.status(401).json({message: "Authorization required"});
+    return;
+  }
+  
+  const token = authHeader.split(" ")[1];
+
+
+  try{
+    const decoded = jwt.verify(token, JWT_SECRET);
+
+    console.log(decoded);
+  } catch(e){
+    res.status(401).json({message: "Invalid token"});
+    return;
+  }
+  
   try {
     console.log(req.body);
     const result = await User.deleteOne(req.body);

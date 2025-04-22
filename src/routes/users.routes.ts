@@ -1,5 +1,7 @@
 import {Router} from "express"
 import { getUsers, createUser, deleteUser, updateUser } from "../controllers/users.controller";
+import { getAuthMiddleware } from "../middlewares/authMiddleware";
+import { UserRoles } from "../models/User";
 
 const router = Router();
 
@@ -106,7 +108,7 @@ router.post("/", createUser);
  *                      example: 0
  */
 //Получение всех пользователей (эндпоинт)
-router.get("/", getUsers);
+router.get("/", getAuthMiddleware([UserRoles.admin, UserRoles.moderator]),  getUsers);
 
 /**
  * @swagger
@@ -115,6 +117,7 @@ router.get("/", getUsers);
  *     summary: Изменить информацию о пользователе
  *     description: Меняет информацию о пользователе в БД
  *     tags: [Users]
+ *     security: [{ bearerAuth: []}]
  *     requestBody:
  *       required: true
  *       content:
@@ -193,6 +196,7 @@ router.put("/", updateUser);
  *     summary: Удалить пользователя
  *     description: Удаляет пользователя по ID
  *     tags: [Users]
+ *     security: [{ bearerAuth: []}]
  *     requestBody:
  *       required: true
  *       content:
@@ -241,6 +245,6 @@ router.put("/", updateUser);
  *                   example: "User not found"
  */
 //Удаление пользователей (эндпоинт)
-router.delete("/", deleteUser);
+router.delete("/", getAuthMiddleware([UserRoles.admin]), deleteUser);
 
 export default router;
